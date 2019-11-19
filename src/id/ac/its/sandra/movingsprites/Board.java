@@ -11,6 +11,8 @@ import java.awt.event.KeyEvent;
 import java.util.List;
 import javax.swing.JPanel;
 import javax.swing.Timer;
+import java.util.ArrayList;
+import java.awt.Rectangle;
 
 public class Board extends JPanel implements ActionListener {
 
@@ -19,7 +21,15 @@ public class Board extends JPanel implements ActionListener {
     private final int DELAY = 10;
     private Timer timer;
     private SpaceShip spaceShip;
+    private List<Asteroid> asteroids;
 
+    private final int[][] placement = {
+            {2170, 30}, {1370, 76}, {660, 198},
+            {770, 163}, {755, 65},  {490, 82},
+            {610, 99},  {595, 37},  {930, 213},
+            {825, 231}, {732, 184}, {396, 153},
+    };
+    
     public Board() {
 
         initBoard();
@@ -32,11 +42,22 @@ public class Board extends JPanel implements ActionListener {
         setFocusable(true);
 
         spaceShip = new SpaceShip(ICRAFT_X, ICRAFT_Y);
-
+        
+        initAsteroids();
+        
         timer = new Timer(DELAY, this);
         timer.start();
     }
 
+    public void initAsteroids() {
+        
+        asteroids = new ArrayList<>();
+
+        for (int[] p : placement) {
+            asteroids.add(new Asteroid(p[0], p[1]));
+        }
+    }
+    
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -60,6 +81,11 @@ public class Board extends JPanel implements ActionListener {
             g2d.drawImage(missile.getImage(), missile.getX(),
                     missile.getY(), this);
         }
+        
+        for (Asteroid asteroid : asteroids) {
+                g2d.drawImage(asteroid.getImage(), asteroid.getX(), 
+                		asteroid.getY(), this);
+        }  
     }
 
     @Override
@@ -67,6 +93,7 @@ public class Board extends JPanel implements ActionListener {
 
         updateMissiles();
         updateSpaceShip();
+        updateAsteroids();
 
         repaint();
     }
@@ -94,6 +121,19 @@ public class Board extends JPanel implements ActionListener {
         spaceShip.move();
     }
 
+    private void updateAsteroids() {
+        for (int i = 0; i < asteroids.size(); i++) {
+
+            Asteroid a = asteroids.get(i);
+            
+            if (a.isVisible()) {
+                a.move();
+            } else {
+                asteroids.remove(i);
+            }
+        }
+    }
+    
     private class TAdapter extends KeyAdapter {
 
         @Override
