@@ -1,87 +1,69 @@
 package id.ac.its.sandra.movingsprites;
 
-import java.awt.Image;
 import java.awt.event.KeyEvent;
-import javax.swing.ImageIcon;
+import java.util.ArrayList;
+import java.util.List;
 
-public class SpaceShip {
+public class SpaceShip extends Sprite {
 
     private int dx;
     private int dy;
-    private int x = 40;
-    private int y = 60;
-    private int w;
-    private int h;
-    private Image image;
+    private List<Missile> missiles;
 
-    public SpaceShip() {
-
-        loadImage();
+    public SpaceShip(int x, int y) {
+        super(x, y);
+        
+        initSpaceShip();
     }
 
-    private void loadImage() {
+    private void initSpaceShip() {
+
+        missiles = new ArrayList<>();
         
-        ImageIcon ii = new ImageIcon("src/resources/spaceship.png");
-        image = ii.getImage(); 
-        
-        w = image.getWidth(null);
-        h = image.getHeight(null);
+        loadImage("src/resources/spaceship.png"); 
+        getImageDimensions();
     }
 
     public void move() {
-        
         x += dx;
         y += dy;
     }
 
-    public int getX() {
-        
-        return x;
-    }
-
-    public int getY() {
-        
-        return y;
-    }
-    
-    public int getWidth() {
-        
-        return w;
-    }
-    
-    public int getHeight() {
-        
-        return h;
-    }    
-
-    public Image getImage() {
-        
-        return image;
+    public List<Missile> getMissiles() {
+        return missiles;
     }
 
     public void keyPressed(KeyEvent e) {
 
         int key = e.getKeyCode();
 
+        if (key == KeyEvent.VK_SPACE) {
+            fire();
+        }
+
         if (key == KeyEvent.VK_LEFT) {
-            dx = -2;
+            dx = -1;
         }
 
         if (key == KeyEvent.VK_RIGHT) {
-            dx = 2;
+            dx = 1;
         }
 
         if (key == KeyEvent.VK_UP) {
-            dy = -2;
+            dy = -1;
         }
 
         if (key == KeyEvent.VK_DOWN) {
-            dy = 2;
+            dy = 1;
         }
     }
 
+    public void fire() {
+        missiles.add(new Missile(x + width, y + height / 2));
+    }
+
     public void keyReleased(KeyEvent e) {
-        
+
         int key = e.getKeyCode();
 
         if (key == KeyEvent.VK_LEFT) {
