@@ -95,6 +95,8 @@ public class Board extends JPanel implements ActionListener {
         updateSpaceShip();
         updateAsteroids();
 
+        checkCollisions();
+        
         repaint();
     }
 
@@ -134,6 +136,27 @@ public class Board extends JPanel implements ActionListener {
         }
     }
     
+
+    public void checkCollisions() {
+
+        List<Missile> ms = spaceShip.getMissiles();
+
+        for (Missile m : ms) {
+
+            Rectangle r1 = m.getBounds();
+
+            for (Asteroid asteroid : asteroids) {
+
+                Rectangle r2 = asteroid.getBounds();
+
+                if (r1.intersects(r2)) {
+                    
+                    m.setVisible(false);
+                    asteroid.setVisible(false);
+                }
+            }
+        }
+    }
     private class TAdapter extends KeyAdapter {
 
         @Override
